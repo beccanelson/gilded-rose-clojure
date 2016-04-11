@@ -61,4 +61,25 @@
           (it "never decreases in quality"
             (should= (sulfuras :quality) 80))
         )
+
+        (describe "Backstage passes"
+          ;these tests do not pass
+
+          ; (it "increases in quality as sell-in date approaches"
+          ;   (should= (backstage-passes :quality) 21))
+          ; (it "increases by 2 when sell-in is 10 or less"
+          ;   (let [backstage-passes-9 (item "Backstage passes to a TAFKAL80ETC concert" 9 25)]
+          ;     (do (update-quality [backstage-passes-9])
+          ;     (should= (backstage-passes-9 :quality) 27))))
+          ;
+          ; (it "increases by 3 when there are 5 days or less"
+          ;   (let [backstage-passes-3 (item "Backstage passes to a TAFKAL80ETC concert" 3 40)]
+          ;     (do (update-quality [backstage-passes-3])
+          ;     (should= (backstage-passes-3 :quality) 43))))
+          ;
+          ; (it "decreases to 0 when sell-in has passed"
+          ;   (let [backstage-passes-0 (item "Backstage passes to a TAFKAL80ETC concert" 0 50)]
+          ;     (do (update-quality [backstage-passes-0])
+          ;     (should= (backstage-passes-0 :quality) 0))))
+        )
 ))))
