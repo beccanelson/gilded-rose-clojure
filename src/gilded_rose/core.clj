@@ -3,36 +3,58 @@
 (defn update-quality [items]
   (map
     (fn[item] (cond
+      ; if sell-in is less than 0 and item is backstage passes
       (and (< (:sell-in item) 0) (= "Backstage passes to a TAFKAL80ETC concert" (:name item)))
+        ; quality = 0
         (merge item {:quality 0})
+      ; if item is aged brie or backstage passes
       (or (= (:name item) "Aged Brie") (= (:name item) "Backstage passes to a TAFKAL80ETC concert"))
+        ; if item is backstage passes and sell-in is between 5 and 9
         (if (and (= (:name item) "Backstage passes to a TAFKAL80ETC concert") (>= (:sell-in item) 5) (< (:sell-in item) 10))
+          ; quality increases by 2
           (merge item {:quality (inc (inc (:quality item)))})
+          ; else if item is backstage passes and sell-in is between 0 and 4
           (if (and (= (:name item) "Backstage passes to a TAFKAL80ETC concert") (>= (:sell-in item) 0) (< (:sell-in item) 5))
+            ; quality increases by 3
             (merge item {:quality (inc (inc (inc (:quality item))))})
+            ; else if item quality is less than 50
             (if (< (:quality item) 50)
+              ; quality increases by 1
               (merge item {:quality (inc (:quality item))})
               item)))
+      ; if item sell-in is less than 0
       (< (:sell-in item) 0)
+        ; if item is backstage passes
         (if (= "Backstage passes to a TAFKAL80ETC concert" (:name item))
+          ; qualty = 0
           (merge item {:quality 0})
+          ; if item is dexterity vest or elixir of the mongoose
           (if (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item)))
+            ; quality decreases by 2
             (merge item {:quality (- (:quality item) 2)})
             item))
+      ; if item is exterity vest or elixr of the mongoose
       (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item)))
+        ;quality decreases by 1
         (merge item {:quality (dec (:quality item))})
+      ; for all other items
       :else item))
   (map (fn [item]
+      ; if item is not sulfuras
       (if (not= "Sulfuras, Hand of Ragnaros" (:name item))
+        ; decrease sell-in
         (merge item {:sell-in (dec (:sell-in item))})
         item))
+  ; return items
   items)))
 
+; item has a name, sell-in, and quality
 (defn item [item-name, sell-in, quality]
   {:name item-name, :sell-in sell-in, :quality quality})
 
+; starting values for inventory
 (defn update-current-inventory[]
-  (let [inventory 
+  (let [inventory
     [
       (item "+5 Dexterity Vest" 10 20)
       (item "Aged Brie" 2 0)
