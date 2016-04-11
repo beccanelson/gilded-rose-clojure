@@ -29,8 +29,14 @@
 
         (it "does not lower the sell-in value if the item is named 'Sulfuras, Hand of Ragnaros'"
           (should= (sulfuras :sell-in) 0))
+          ; this test fails, returns -1
 
+        (it "lowers the quality by 1 on default items"
+          (should= (dexterity-vest :quality) 19)
+          (should= (elixir-mongoose :quality) 6))
 
+        (it "increases in quality if name is Aged Brie"
+          (should= (aged-brie :quality) 1))
 
       )))
 
