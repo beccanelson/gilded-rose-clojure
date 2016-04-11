@@ -31,7 +31,22 @@
           (it "lowers the quality by 1 if sell-in has not passed"
             (should= (dexterity-vest :quality) 19)
             (should= (elixir-mongoose :quality) 6))
-          )
+
+          (it "lowers the quality by 2 if sell-in has passed"
+            (let [old-dexterity-vest (item "+5 Dexterity Vest" 0 10)]
+              (do (update-quality [old-dexterity-vest])
+              (should= (old-dexterity-vest :quality) 8))))
+
+          (it "does not allow the quality to be greater than 50"
+            (let [super-aged-brie (item "Aged Brie" 0 50)]
+              (do (update-quality [super-aged-brie])
+              (should= (super-aged-brie :quality) 50))))
+
+          (it "does not allow the quality to be negative"
+            (let [old-elixir (item "Elixir of the Mongoose" 0 0)]
+              (do (update-quality [old-elixir])
+              (should= (old-elixir :quality) 0))))
+        )
 
 
         (describe "Aged Brie"
@@ -40,7 +55,7 @@
         )
 
         (describe "Sulfuras"
-          (it "never lowers it sell-in value"
+          (it "never decreases sell-in value"
             (should= (sulfuras :sell-in) 0))
 
           (it "never decreases in quality"
