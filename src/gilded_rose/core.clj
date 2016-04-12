@@ -9,13 +9,19 @@
 (defmethod update-sell-in :default [item]
   (merge item {:sell-in (dec (:sell-in item))}))
 
-(defmulti update-quality :Item)
+(defmulti update-item-quality :Item)
 
-(defmethod update-quality :default [item]
+(defmethod update-item-quality :default [item]
   (merge item {:quality (dec (:quality item))}))
 
-(defn update [items]
-  (map (comp update-sell-in update-quality)))
+(defn sulfuras [sell-in, quality]
+  {:Item :Sulfuras :name "Sulfuras, Hand of Ragnaros", :sell-in sell-in, :quality quality})
+
+(defmethod update-sell-in :Sulfuras [sulfuras]
+  (sulfuras))
+
+(defmethod update-item-quality :Sulfuras [sulfuras]
+  (sulfuras))
 
 (defn update-quality [items]
   (map
