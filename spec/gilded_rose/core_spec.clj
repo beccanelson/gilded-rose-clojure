@@ -22,17 +22,19 @@
       (describe "#update-quality"
         (it "decreases the quality"
           (let [updated-item (update-quality default-item)]
-            (should= (:quality updated-item) 19))))
-    ))
+            (should= (:quality updated-item) 19))))))
+
   (describe "Sulfuras"
     (let [sulfuras-item (sulfuras 0 80)]
       (it "never decreases sell-in value"
         (let [updated-sulfuras (update-sell-in sulfuras)]
-          (should= (:sell-in updated-sulfuras) 0))
+          (should= (:sell-in updated-sulfuras) 0)))
 
       (it "never decreases in quality"
         (let [updated-sulfuras (update-quality sulfuras)]
-          (should= (:quality updated-sulfuras) 80))))))
+          (should= (:quality updated-sulfuras) 80)))
+
+      ))
 
   (describe "update current inventory"
     (let [updated-inventory (update-current-inventory)]
@@ -71,14 +73,6 @@
         (describe "Aged Brie"
           (it "increases in quality"
             (should= (aged-brie :quality) 1))
-        )
-
-        (describe "Sulfuras"
-          ; (it "never decreases sell-in value"
-          ;   (should= (sulfuras :sell-in) 0))
-
-          (it "never decreases in quality"
-            (should= (sulfuras :quality) 80))
         )
 
         ; (describe "Backstage passes"
