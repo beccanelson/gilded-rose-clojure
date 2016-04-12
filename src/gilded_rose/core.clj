@@ -9,13 +9,13 @@
 (defmethod update-sell-in :default [item]
   (assoc item :sell-in (dec (:sell-in item))))
 
-(defmulti new-update-quality :Item)
+(defmulti update-quality :Item)
 
-(defmethod new-update-quality :default [item]
+(defmethod update-quality :default [item]
   (assoc item :quality (dec (:quality item))))
 
 (defn update [items]
-  (map (comp update-sell-in new-update-quality)))
+  (map (comp update-sell-in update-quality)))
 
 (defn update-quality [items]
   (map
