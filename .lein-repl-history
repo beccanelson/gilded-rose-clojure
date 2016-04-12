@@ -110,3 +110,17 @@ quit
 (let [updated-item (update-sell-in default-item)]
 (:sell-in updated-item)))
 quit
+(defn item [item-name, sell-in, quality]
+  {:name item-name, :sell-in sell-in, :quality quality})
+(defmulti update-sell-in :Item)
+(defmethod update-sell-in :default [item]
+  (merge item {:sell-in (dec (:sell-in item))}))
+(defmulti update-quality :Item)
+(defmethod update-quality :default [item]
+  (merge item {:quality (dec (:quality item))}))
+(let [updated-item (update-sell-in default-item)]
+(= (:sell-in updated-item) 9))
+(let [default-item (item "Default Item" 10 20)]
+(let [updated-item (update-quality default-item)]
+(= (:quality updated-item) 19)))
+quit

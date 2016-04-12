@@ -7,12 +7,12 @@
 (defmulti update-sell-in :Item)
 
 (defmethod update-sell-in :default [item]
-  (assoc item :sell-in (dec (:sell-in item))))
+  (merge item {:sell-in (dec (:sell-in item))}))
 
 (defmulti update-quality :Item)
 
 (defmethod update-quality :default [item]
-  (assoc item :quality (dec (:quality item))))
+  (merge item {:quality (dec (:quality item))}))
 
 (defn update [items]
   (map (comp update-sell-in update-quality)))
