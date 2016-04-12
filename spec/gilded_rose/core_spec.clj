@@ -1,18 +1,29 @@
 (ns gilded-rose.core-spec
 (:require [speclj.core :refer :all]
-          [gilded-rose.core :refer [update-quality item update-current-inventory]]))
+          [gilded-rose.core :refer :all]))
 
 (describe "gilded rose"
   (describe "item"
-    (let [sample-item (item "Sample Item" 10 20)]
+    (let [default-item (item "Default Item" 10 20)]
       (it "has a name"
-        (should= (sample-item :name) "Sample Item"))
+        (should= (default-item :name) "Default Item"))
 
       (it "has a sell-in value"
-        (should= (sample-item :sell-in) 10))
+        (should= (default-item :sell-in) 10))
 
       (it "has a quality"
-        (should= (sample-item :quality) 20))))
+        (should= (default-item :quality) 20))
+
+      (describe "#update-sell-in"
+        (it "decreases the sell-in value"
+          (do (update-sell-in default-item)
+          (should= (:sell-in default-item) 9))))
+
+      (describe "#update-quality"
+        (it "decreases the quality"
+          (do (update-quality default-item)
+          (should= (:quality default-item) 19))))
+    )
 
   (describe "update current inventory"
     (let [updated-inventory (update-current-inventory)]
@@ -48,7 +59,6 @@
               (should= (old-elixir :quality) 0))))
         )
 
-
         (describe "Aged Brie"
           (it "increases in quality"
             (should= (aged-brie :quality) 1))
@@ -62,24 +72,24 @@
             (should= (sulfuras :quality) 80))
         )
 
-        (describe "Backstage passes"
-          ;these tests do not pass
-
-          ; (it "increases in quality as sell-in date approaches"
-          ;   (should= (backstage-passes :quality) 21))
-          ; (it "increases by 2 when sell-in is 10 or less"
-          ;   (let [backstage-passes-9 (item "Backstage passes to a TAFKAL80ETC concert" 9 25)]
-          ;     (do (update-quality [backstage-passes-9])
-          ;     (should= (backstage-passes-9 :quality) 27))))
-          ;
-          ; (it "increases by 3 when there are 5 days or less"
-          ;   (let [backstage-passes-3 (item "Backstage passes to a TAFKAL80ETC concert" 3 40)]
-          ;     (do (update-quality [backstage-passes-3])
-          ;     (should= (backstage-passes-3 :quality) 43))))
-          ;
-          ; (it "decreases to 0 when sell-in has passed"
-          ;   (let [backstage-passes-0 (item "Backstage passes to a TAFKAL80ETC concert" 0 50)]
-          ;     (do (update-quality [backstage-passes-0])
-          ;     (should= (backstage-passes-0 :quality) 0))))
-        )
-))))
+        ; (describe "Backstage passes"
+        ;   ;these tests do not pass
+        ;
+        ;   (it "increases in quality as sell-in date approaches"
+        ;     (should= (backstage-passes :quality) 21))
+        ;   (it "increases by 2 when sell-in is 10 or less"
+        ;     (let [backstage-passes-9 (item "Backstage passes to a TAFKAL80ETC concert" 9 25)]
+        ;       (do (update-quality [backstage-passes-9])
+        ;       (should= (backstage-passes-9 :quality) 27))))
+        ;
+        ;   (it "increases by 3 when there are 5 days or less"
+        ;     (let [backstage-passes-3 (item "Backstage passes to a TAFKAL80ETC concert" 3 40)]
+        ;       (do (update-quality [backstage-passes-3])
+        ;       (should= (backstage-passes-3 :quality) 43))))
+        ;
+        ;   (it "decreases to 0 when sell-in has passed"
+        ;     (let [backstage-passes-0 (item "Backstage passes to a TAFKAL80ETC concert" 0 50)]
+        ;       (do (update-quality [backstage-passes-0])
+        ;       (should= (backstage-passes-0 :quality) 0))))
+        ; )
+)))))

@@ -1,5 +1,22 @@
 (ns gilded-rose.core)
 
+; item has a name, sell-in, and quality
+(defn item [item-name, sell-in, quality]
+  {:name item-name, :sell-in sell-in, :quality quality})
+
+(defmulti update-sell-in :Item)
+
+(defmethod update-sell-in :default [item]
+  (assoc item :sell-in (dec (:sell-in item))))
+
+(defmulti new-update-quality :Item)
+
+(defmethod new-update-quality :default [item]
+  (assoc item :quality (dec (:quality item))))
+
+(defn update [items]
+  (map (comp update-sell-in new-update-quality)))
+
 (defn update-quality [items]
   (map
     (fn[item] (cond
@@ -45,12 +62,8 @@
         ; decrease sell-in
         (merge item {:sell-in (dec (:sell-in item))})
         item))
-  ; return items
   items)))
 
-; item has a name, sell-in, and quality
-(defn item [item-name, sell-in, quality]
-  {:name item-name, :sell-in sell-in, :quality quality})
 
 ; starting values for inventory
 (defn update-current-inventory[]
