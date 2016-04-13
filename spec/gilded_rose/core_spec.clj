@@ -68,10 +68,13 @@
             (should= (:quality nine-day) 27)))
 
         (it "increases quality by 3 if sell-in is 5 or less"
-          (let [six-day (update-times passes 9 update-item) five-day (update-times passes 10 update-item)]
+          (let [four-day (update-times passes 11 update-item) five-day (update-times passes 10 update-item)]
             (should= (:quality five-day) 35)
-            (should= (:quality six-day) 33)))))))
+            (should= (:quality four-day) 38)))
 
+        (it "drops quality to 0 after sell-in day"
+          (let [expired (update-times passes 16 update-item)]
+            (should= (:quality expired) 0)))))))
   ; (describe "update current inventory"
   ;   (let [updated-inventory (update-current-inventory)]
   ;     (let [

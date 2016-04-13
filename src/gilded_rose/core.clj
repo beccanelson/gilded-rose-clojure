@@ -44,10 +44,12 @@
 (defmethod update-item :passes [passes]
   (let [updated-passes (update-sell-in passes)]
     (cond
-      (<= (:sell-in passes) 10)
-      (update-times updated-passes 2 update-item-quality)
-      (<= (:sell-in passes) 5)
+      (< (:sell-in updated-passes) 0)
+      (update passes :quality 0)
+      (< (:sell-in updated-passes) 5)
       (update-times updated-passes 3 update-item-quality)
+      (< (:sell-in updated-passes) 10)
+      (update-times updated-passes 2 update-item-quality)
       :else
         (update-item-quality updated-passes))))
 
