@@ -4,6 +4,12 @@
 (defn item [item-name, sell-in, quality]
   {:name item-name, :sell-in sell-in, :quality quality})
 
+(defn update-times [item times function]
+  (loop [times times current-item item]
+    (if (= times 0)
+      current-item
+      (recur (dec times) (function current-item)))))
+
 (defmulti update-sell-in :item)
 
 (defmulti update-item-quality :item)
@@ -17,14 +23,14 @@
 (defmethod update-item-quality :default [item]
   (update item :quality (dec (:quality item))))
 
+(defmethod update-item-quality :passes [passes]
+  (update passes :quality (inc (:quality passes))))
+
 (defn make-sulfuras [sell-in, quality]
-  {:item :sulfuras :name "Sulfuras, Hand of Ragnaros", :sell-in sell-in, :quality quality})
+  {:item :sulfuras :name "Sulfuras, Hand of Ragnaros" :sell-in sell-in :quality quality})
 
-(defmethod update-sell-in :sulfuras [sulfuras]
-  sulfuras)
-
-(defmethod update-item-quality :sulfuras [sulfuras]
-  sulfuras)
+(defn make-passes [sell-in quality]
+  {:item :passes :name "Backstage passes to a TAFKAL80ETC concert" :sell-in sell-in :quality quality})
 
 (defmulti update-item :item)
 
@@ -32,8 +38,22 @@
   (let [updated-item (update-sell-in item)]
     (update-item-quality updated-item)))
 
+(defmethod update-item :sulfuras [sulfuras]
+  sulfuras)
+
+(defmethod update-item :passes [passes]
+  (let [updated-passes (update-sell-in passes)]
+    (cond
+      (<= (:sell-in passes) 10)
+      (update-times updated-passes 2 update-item-quality)
+      (<= (:sell-in passes) 5)
+      (update-times updated-passes 3 update-item-quality)
+      :else
+        (update-item-quality updated-passes))))
+
+
 (defn update-inventory [items]
-  (map update items))
+  (map update-item items))
 
 
 (defn update-quality [items]

@@ -3,13 +3,21 @@
            [gilded-rose.core :refer :all]))
 
 (def sulfuras (make-sulfuras 0 80))
+(def passes (make-passes 15 20))
 (def default-item (item "Default Item" 10 20))
-; (def updated-sell-in (update-sell-in default-item))
 (def updated-quality (update-item-quality default-item))
 (def updated-item (update-item default-item))
 
+
+
 (def inventory [sulfuras])
 (def updated-inventory (update-inventory inventory))
+
+; (defn update-times [item times]
+;   (loop [times times current-item item]
+;     (if (= times 0)
+;       current-item
+;       (recur (dec times) (update-item current-item)))))
 
 (describe "gilded rose"
   (context "item"
@@ -46,7 +54,23 @@
       (it "never decreases the quality or sell-in"
         (let [updated-sulfuras (update-item sulfuras)]
             (should= (:quality updated-sulfuras) 80)
-            (should= (:sell-in updated-sulfuras) 0))))))
+            (should= (:sell-in updated-sulfuras) 0)))
+
+
+      (context "Backstage Passes"
+        (it "increases quality by 1 if sell-in is greater than 10"
+          (let [fourteen-day (update-item passes)]
+            (should= (:quality fourteen-day) (inc (:quality passes)))))
+
+        (it "increases quality by 2 if sell-in is 10 or less"
+          (let [nine-day (update-times passes 6 update-item) ten-day (update-times passes 5 update-item)]
+            (should= (:quality ten-day) 25)
+            (should= (:quality nine-day) 27)))
+
+        (it "increases quality by 3 if sell-in is 5 or less"
+          (let [six-day (update-times passes 9 update-item) five-day (update-times passes 10 update-item)]
+            (should= (:quality five-day) 35)
+            (should= (:quality six-day) 33)))))))
 
   ; (describe "update current inventory"
   ;   (let [updated-inventory (update-current-inventory)]
@@ -85,25 +109,3 @@
   ;       (describe "Aged Brie"
   ;         (it "increases in quality"
   ;           (should= (aged-brie :quality) 1)))))))
-
-
-        ; (describe "Backstage passes"
-        ;   ;these tests do not pass
-        ;
-        ;   (it "increases in quality as sell-in date approaches"
-        ;     (should= (backstage-passes :quality) 21))
-        ;   (it "increases by 2 when sell-in is 10 or less"
-        ;     (let [backstage-passes-9 (item "Backstage passes to a TAFKAL80ETC concert" 9 25)]
-        ;       (do (update-quality [backstage-passes-9])
-        ;       (should= (backstage-passes-9 :quality) 27))))
-        ;
-        ;   (it "increases by 3 when there are 5 days or less"
-        ;     (let [backstage-passes-3 (item "Backstage passes to a TAFKAL80ETC concert" 3 40)]
-        ;       (do (update-quality [backstage-passes-3])
-        ;       (should= (backstage-passes-3 :quality) 43))))
-        ;
-        ;   (it "decreases to 0 when sell-in has passed"
-        ;     (let [backstage-passes-0 (item "Backstage passes to a TAFKAL80ETC concert" 0 50)]
-        ;       (do (update-quality [backstage-passes-0])
-        ;       (should= (backstage-passes-0 :quality) 0))))
-        ; )
