@@ -26,7 +26,9 @@
 (defmethod update-item-quality :sulfuras [sulfuras]
   sulfuras)
 
-(defn update-item [item]
+(defmulti update-item :item)
+
+(defmethod update-item :default [item]
   (let [updated-item (update-sell-in item)]
     (update-item-quality updated-item)))
 
