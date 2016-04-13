@@ -8,11 +8,14 @@
 
 (defmulti update-item-quality :item)
 
+(defn update [item attribute function]
+  (merge item {attribute function}))
+
 (defmethod update-sell-in :default [item]
-  (merge item {:sell-in (dec (:sell-in item))}))
+  (update item :sell-in (dec (:sell-in item))))
 
 (defmethod update-item-quality :default [item]
-  (merge item {:quality (dec (:quality item))}))
+  (update item :quality (dec (:quality item))))
 
 (defn make-sulfuras [sell-in, quality]
   {:item :sulfuras :name "Sulfuras, Hand of Ragnaros", :sell-in sell-in, :quality quality})
@@ -23,7 +26,7 @@
 (defmethod update-item-quality :sulfuras [sulfuras]
   sulfuras)
 
-(defn update [item]
+(defn update-item [item]
   (let [updated-item (update-sell-in item)]
     (update-item-quality updated-item)))
 

@@ -3,13 +3,12 @@
            [gilded-rose.core :refer :all]))
 
 (def sulfuras (make-sulfuras 0 80))
-(def updated-sulfuras (update sulfuras))
-(println updated-sulfuras)
+(def updated-sulfuras (update-item sulfuras))
 
 (def default-item (item "Default Item" 10 20))
 (def updated-sell-in (update-sell-in default-item))
 (def updated-quality (update-item-quality default-item))
-(def updated-item (update default-item))
+(def updated-item (update-item default-item))
 
 (def inventory [sulfuras])
 (def updated-inventory (update-inventory inventory))
@@ -38,7 +37,7 @@
     (it "decreases the quality"
       (should= (:quality updated-quality) 19)))
 
-  (context "#update"
+  (context "#update-item"
      (it "updates the quality and sell-in"
          (should= (:sell-in updated-item) 9)
          (should= (:quality updated-item) 19))
