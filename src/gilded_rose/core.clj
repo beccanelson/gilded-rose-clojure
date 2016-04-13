@@ -21,16 +21,22 @@
   (update item :sell-in (dec (:sell-in item))))
 
 (defmethod update-item-quality :default [item]
-  (update item :quality (dec (:quality item))))
+  (if (> (:quality item) 0)
+    (update item :quality (dec (:quality item)))
+    item))
 
-(defmethod update-item-quality :passes [passes]
-  (update passes :quality (inc (:quality passes))))
+(defmethod update-item-quality (or :passes :brie) [item]
+  (if (< (:quality item) 50)
+    (update item :quality (inc (:quality item)))))
 
 (defn make-sulfuras [sell-in, quality]
   {:item :sulfuras :name "Sulfuras, Hand of Ragnaros" :sell-in sell-in :quality quality})
 
 (defn make-passes [sell-in quality]
   {:item :passes :name "Backstage passes to a TAFKAL80ETC concert" :sell-in sell-in :quality quality})
+
+(defn make-brie [sell-in quality]
+  {:item :brie :name "Aged Brie" :sell-in sell-in :quality quality})
 
 (defmulti update-item :item)
 
