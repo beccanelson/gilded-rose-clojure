@@ -16,23 +16,27 @@
 (defn update [item attribute function]
   (merge item {attribute function}))
 
-(defmethod update-sell-in :default [item]
-  (update item :sell-in (dec (:sell-in item))))
+(defn increase-quality [item]
+  (if (< (:quality item) 50)
+    (update item :quality (inc (:quality item)))
+    item))
 
-(defmethod update-quality :default [item]
+(defn decrease-quality [item]
   (if (> (:quality item) 0)
     (update item :quality (dec (:quality item)))
     item))
 
+(defmethod update-sell-in :default [item]
+  (update item :sell-in (dec (:sell-in item))))
+
+(defmethod update-quality :default [item]
+  (decrease-quality item))
+
 (defmethod update-quality :passes [item]
-  (if (< (:quality item) 50)
-    (update item :quality (inc (:quality item)))
-    item))
+  (increase-quality item))
 
 (defmethod update-quality :brie [item]
-  (if (< (:quality item) 50)
-    (update item :quality (inc (:quality item)))
-    item))
+  (increase-quality item))
 
 (defn make-sulfuras [name sell-in quality]
   {:item :sulfuras :name name :sell-in sell-in :quality quality})
