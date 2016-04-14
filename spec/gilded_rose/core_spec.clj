@@ -6,7 +6,7 @@
 (def passes (make-passes 15 20))
 (def brie (make-brie 2 0))
 (def default-item (item "Default Item" 10 20))
-(def updated-quality (update-item-quality default-item))
+(def updated-quality (update-quality default-item))
 (def updated-item (update-item default-item))
 
 
@@ -40,11 +40,11 @@
       (should= (:quality updated-quality) 19))
 
     (it "does not allow quality to be negative"
-      (let [min-quality (update-times default-item 100 update-item-quality)]
+      (let [min-quality (update-times default-item 100 update-quality)]
         (should= 0 (:quality min-quality))))
 
     (it "does not allow quality to be greater than 50"
-      (let [max-quality (update-times brie 100 update-item-quality)]
+      (let [max-quality (update-times brie 100 update-quality)]
         (should= 50 (:quality max-quality)))))
 
   (context "#update-item"
@@ -58,7 +58,6 @@
         (let [updated-sulfuras (update-item sulfuras)]
             (should= (:quality updated-sulfuras) 80)
             (should= (:sell-in updated-sulfuras) 0))))
-
 
     (context "Backstage Passes"
       (it "increases quality by 1 if sell-in is greater than 10"
