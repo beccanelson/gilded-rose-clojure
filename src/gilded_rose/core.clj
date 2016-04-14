@@ -73,14 +73,13 @@
 (defn update-inventory [items]
   (map update-item items))
 
-; starting values for inventory
-; (defn update-current-inventory[]
-;   (let [inventory
-;         [
-;           (item "+5 Dexterity Vest" 10 20)
-;           (item "Aged Brie" 2 0)
-;           (item "Elixir of the Mongoose" 5 7)
-;           (make-sulfuras 0 80)
-;           (item "Backstage passes to a TAFKAL80ETC concert" 15 20)]]
-;
-;     (update-quality inventory)))
+(defn update-current-inventory[]
+  (let [inventory
+        [
+          (item "+5 Dexterity Vest" 10 20)
+          (make-brie 2 0)
+          (item "Elixir of the Mongoose" 5 7)
+          (make-sulfuras 0 80)
+          (make-passes 15 20)]]
+
+    (update-inventory inventory)))

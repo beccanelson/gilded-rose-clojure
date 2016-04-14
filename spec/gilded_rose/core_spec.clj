@@ -2,16 +2,17 @@
  (:require [speclj.core :refer :all]
            [gilded-rose.core :refer :all]))
 
+(def default-item (item "Default Item" 10 20))
 (def sulfuras (make-sulfuras 0 80))
 (def passes (make-passes 15 20))
 (def brie (make-brie 2 0))
-(def default-item (item "Default Item" 10 20))
+(def elixir (item "Elixir of the Mongoose" 5 7))
+(def vest (item "+5 Dexterity Vest" 10 20))
+
 (def updated-quality (update-quality default-item))
 (def updated-item (update-item default-item))
 
-
-
-(def inventory [sulfuras])
+(def inventory [vest brie elixir sulfuras passes])
 (def updated-inventory (update-inventory inventory))
 
 (describe "gilded rose"
@@ -76,9 +77,18 @@
 
       (it "drops quality to 0 after sell-in day"
         (let [expired (update-times passes 16 update-item)]
-          (should= (:quality expired) 0)))))
+          (should= (:quality expired) 0))))
 
-  (context "Aged Brie"
-    (it "increases in quality"
-      (let [updated-brie (update-item brie)]
-        (should= 1 (:quality updated-brie))))))
+    (context "Aged Brie"
+      (it "increases in quality"
+        (let [updated-brie (update-item brie)]
+          (should= 1 (:quality updated-brie))))))
+
+  (context "#udate-inventory"
+    (it "updates all items in inventory"
+       (should-not= updated-inventory inventory))
+
+    (it "decreases the sell-in and quality for Dexterity Vest"
+      (let [updated-vest (first updated-inventory)]
+        (should= 9 (:sell-in updated-vest))
+        (should= 19 (:quality updated-vest))))))
