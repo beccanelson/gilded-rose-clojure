@@ -25,9 +25,15 @@
     (update item :quality (dec (:quality item)))
     item))
 
-(defmethod update-item-quality (or :passes :brie) [item]
+(defmethod update-item-quality :passes [item]
   (if (< (:quality item) 50)
-    (update item :quality (inc (:quality item)))))
+    (update item :quality (inc (:quality item)))
+    item))
+
+(defmethod update-item-quality :brie [item]
+  (if (< (:quality item) 50)
+    (update item :quality (inc (:quality item)))
+    item))
 
 (defn make-sulfuras [sell-in, quality]
   {:item :sulfuras :name "Sulfuras, Hand of Ragnaros" :sell-in sell-in :quality quality})
