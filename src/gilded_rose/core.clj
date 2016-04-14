@@ -34,18 +34,14 @@
     (update item :quality (inc (:quality item)))
     item))
 
-; ^ these are the same, re-factor later
+(defn make-sulfuras [name sell-in quality]
+  {:item :sulfuras :name name :sell-in sell-in :quality quality})
 
-(defn make-sulfuras [sell-in, quality]
-  {:item :sulfuras :name "Sulfuras, Hand of Ragnaros" :sell-in sell-in :quality quality})
+(defn make-passes [name sell-in quality]
+  {:item :passes :name name :sell-in sell-in :quality quality})
 
-(defn make-passes [sell-in quality]
-  {:item :passes :name "Backstage passes to a TAFKAL80ETC concert" :sell-in sell-in :quality quality})
-
-(defn make-brie [sell-in quality]
-  {:item :brie :name "Aged Brie" :sell-in sell-in :quality quality})
-
-; ^ these are also similar
+(defn make-brie [name sell-in quality]
+  {:item :brie :name name :sell-in sell-in :quality quality})
 
 (defmulti update-item :item)
 
@@ -68,7 +64,6 @@
       :else
         (update-quality updated-passes))))
 
-
 (defn update-inventory [items]
   (map update-item items))
 
@@ -76,9 +71,9 @@
   (let [inventory
         [
          (item "+5 Dexterity Vest" 10 20)
-         (make-brie 2 0)
+         (make-brie "Aged Brie" 2 0)
          (item "Elixir of the Mongoose" 5 7)
-         (make-sulfuras 0 80)
-         (make-passes 15 20)]]
+         (make-sulfuras "Sulfuras, Hand of Ragnaros" 0 80)
+         (make-passes "Backstage passes to a TAFKAL80ETC concert" 15 20)]]
 
     (update-inventory inventory)))

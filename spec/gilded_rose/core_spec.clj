@@ -3,21 +3,26 @@
            [gilded-rose.core :refer :all]))
 
 (def default-item (item "Default Item" 10 20))
-(def sulfuras (make-sulfuras 0 80))
-(def passes (make-passes 15 20))
-(def brie (make-brie 2 0))
+(def sulfuras (make-sulfuras "Sulfuras, Hand of Ragnaros" 0 80))
+(def passes (make-passes "Backstage passes to a TAFKAL80ETC concert" 15 20))
+(def brie (make-brie "Aged Brie" 2 0))
 (def elixir (item "Elixir of the Mongoose" 5 7))
 (def vest (item "+5 Dexterity Vest" 10 20))
 
 (def updated-quality (update-quality default-item))
 (def updated-item (update-item default-item))
 
-(def inventory [vest brie elixir sulfuras passes])
+(def inventory [vest elixir brie sulfuras passes])
 (def updated-inventory (update-inventory inventory))
+
+(defn find-by-item [item coll]
+  (first (filter #(= (% :item) item) coll)))
+
+(defn find-by-name [name coll]
+  (first (filter #(= (% :name) name) coll)))
 
 (describe "gilded rose"
   (context "item"
-
       (it "has a name"
         (should-not-be-nil (default-item :name)))
 
@@ -29,7 +34,33 @@
 
      (context "Sulfuras"
         (it "has a name"
-            (should= (sulfuras :name) "Sulfuras, Hand of Ragnaros"))))
+            (should= (sulfuras :name) "Sulfuras, Hand of Ragnaros"))
+
+        (it "has a sell-in value"
+            (should-not-be-nil (sulfuras :sell-in)))
+
+        (it "has a quality"
+            (should-not-be-nil (sulfuras :quality))))
+
+     (context "Backstage Passes"
+       (it "has a name"
+           (should= (passes :name) "Backstage passes to a TAFKAL80ETC concert"))
+
+       (it "has a sell-in value"
+           (should-not-be-nil (passes :sell-in)))
+
+       (it "has a quality"
+           (should-not-be-nil (passes :quality))))
+
+     (context "Aged Brie"
+       (it "has a name"
+           (should= (brie :name) "Aged Brie"))
+
+       (it "has a sell-in value"
+           (should-not-be-nil (brie :sell-in)))
+
+       (it "has a quality"
+           (should-not-be-nil (brie :quality)))))
 
   (context "#update-sell-in"
     (it "decreases the sell-in value"
@@ -54,7 +85,6 @@
          (should= (:quality updated-item) 19))
 
     (context "Sulfuras"
-
       (it "never decreases the quality or sell-in"
         (let [updated-sulfuras (update-item sulfuras)]
             (should= (:quality updated-sulfuras) 80)
@@ -84,11 +114,24 @@
         (let [updated-brie (update-item brie)]
           (should= 1 (:quality updated-brie))))))
 
-  (context "#udate-inventory"
+  (context "#update-inventory"
     (it "updates all items in inventory"
        (should-not= updated-inventory inventory))
 
-    (it "decreases the sell-in and quality for Dexterity Vest"
-      (let [updated-vest (first updated-inventory)]
-        (should= 9 (:sell-in updated-vest))
-        (should= 19 (:quality updated-vest))))))
+    (it "updates the quality and sell-in for all items except Sulfuras"
+      (let [updated-vest (find-by-name "+5 Dexterity Vest" updated-inventory)                   updated-elixir (find-by-name "Elixir of the Mongoose" updated-inventory)
+            updated-brie (find-by-item :brie updated-inventory)
+            updated-passes (find-by-item :passes updated-inventory)
+            updated-sulfuras (find-by-item :sulfuras updated-inventory)]
+
+        (should= (dec (:sell-in vest)) (:sell-in updated-vest))
+        (should= (dec (:sell-in elixir)) (:sell-in updated-elixir))
+        (should= (dec (:sell-in brie)) (:sell-in updated-brie))
+        (should= (dec (:sell-in passes)) (:sell-in updated-passes))
+        (should= (:sell-in sulfuras) (:sell-in updated-sulfuras))
+
+        (should= (dec (:quality vest)) (:quality updated-vest))
+        (should= (dec (:quality elixir)) (:quality updated-elixir))
+        (should= (inc (:quality brie)) (:quality updated-brie))
+        (should= (inc (:quality passes)) (:quality updated-passes))
+        (should= (:quality sulfuras) (:quality updated-sulfuras))))))
