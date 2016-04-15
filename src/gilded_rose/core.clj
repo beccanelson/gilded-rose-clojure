@@ -3,19 +3,8 @@
 (defn item [item-name, sell-in, quality]
   {:name item-name, :sell-in sell-in, :quality quality})
 
-(defn item-name [item] (:name item))
-
-(defn make-sulfuras [name sell-in quality]
-  {:item :sulfuras :name name :sell-in sell-in :quality quality})
-
-(defn make-passes [name sell-in quality]
-  {:item :passes :name name :sell-in sell-in :quality quality})
-
-(defn make-brie [name sell-in quality]
-  {:item :brie :name name :sell-in sell-in :quality quality})
-
-(defn make-conjured [name sell-in quality]
-  {:item :conjured :name name :sell-in sell-in :quality quality})
+(defn make-specialty-item [type name sell-in quality]
+  {:item type :name name :sell-in sell-in :quality quality})
 
 (defn update-times [function item times]
   (loop [times times current-item item]
@@ -82,14 +71,3 @@
 
 (defn update-inventory [items]
   (map update-item items))
-
-(defn update-current-inventory[]
-  (let [inventory
-        [
-         (item "+5 Dexterity Vest" 10 20)
-         (make-brie "Aged Brie" 2 0)
-         (item "Elixir of the Mongoose" 5 7)
-         (make-sulfuras "Sulfuras, Hand of Ragnaros" 0 80)
-         (make-passes "Backstage passes to a TAFKAL80ETC concert" 15 20)]]
-
-    (update-inventory inventory)))

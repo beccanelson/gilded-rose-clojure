@@ -3,15 +3,16 @@
            [gilded-rose.core :refer :all]))
 
 (def default-item (item "Default Item" 10 20))
-(def sulfuras (make-sulfuras "Sulfuras, Hand of Ragnaros" 0 80))
-(def passes (make-passes "Backstage passes to a TAFKAL80ETC concert" 15 20))
-(def brie (make-brie "Aged Brie" 2 0))
+(def sulfuras (make-specialty-item :sulfuras "Sulfuras, Hand of Ragnaros" 0 80))
+(def passes (make-specialty-item :passes "Backstage passes to a TAFKAL80ETC concert" 15 20))
+(def brie (make-specialty-item :brie "Aged Brie" 2 0))
 (def elixir (item "Elixir of the Mongoose" 5 7))
 (def vest (item "+5 Dexterity Vest" 10 20))
+(def conjured (make-specialty-item :conjured "Conjured" 10 10))
 
 (def updated-item (update-item default-item))
 
-(def inventory [vest elixir brie sulfuras passes])
+(def inventory [vest elixir brie sulfuras passes conjured])
 (def updated-inventory (update-inventory inventory))
 
 (defn find-by-item [item coll]
@@ -116,7 +117,12 @@
     (context "Aged Brie"
       (it "increases in quality"
         (let [updated-brie (update-item brie)]
-          (should= 1 (:quality updated-brie))))))
+          (should= 1 (:quality updated-brie)))))
+
+    (context "Conjured"
+      (it "decreases in quality twice as fast"
+        (let [updated-conjured (update-item conjured)]
+          (should= (- (:quality conjured) 2) (:quality updated-conjured))))))
 
   (context "#update-inventory"
     (it "updates all items in inventory"
