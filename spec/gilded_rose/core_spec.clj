@@ -10,7 +10,7 @@
 (def vest (item "+5 Dexterity Vest" 10 20))
 (def conjured (make-specialty-item :conjured "Conjured" 10 10))
 
-(def updated-item (update-item default-item))
+(def updated-item (update-quality-and-sell-in default-item))
 
 (def inventory [vest elixir brie sulfuras passes conjured])
 (def updated-inventory (update-inventory inventory))
@@ -73,15 +73,15 @@
         (should= 19 (:quality updated-quality))))
 
     (it "does not allow quality to be negative"
-      (let [min-quality (update-times update-quality default-item 100)]
+      (let [min-quality (call-function-times update-quality default-item 100)]
         (should= 0 (:quality min-quality))))
 
     (it "does not allow quality to be greater than 50"
-      (let [max-quality (update-times update-quality brie 100)]
+      (let [max-quality (call-function-times update-quality brie 100)]
         (should= 50 (:quality max-quality))))
 
     (it "decreases quality by 2 if sell-in is less than 0"
-      (let [sell-in-0 (update-times update-item default-item 10) sell-in-past (update-times update-item default-item 11)]
+      (let [sell-in-0 (call-function-times update-quality-and-sell-in default-item 10) sell-in-past (call-function-times update-quality-and-sell-in default-item 11)]
         (should= (- (:quality sell-in-0) 2) (:quality sell-in-past)))))
 
   (context "#update-item"
@@ -91,37 +91,37 @@
 
     (context "Sulfuras"
       (it "never decreases the quality or sell-in"
-        (let [updated-sulfuras (update-item sulfuras)]
+        (let [updated-sulfuras (update-quality-and-sell-in sulfuras)]
             (should= (:quality updated-sulfuras) 80)
             (should= (:sell-in updated-sulfuras) 0))))
 
     (context "Backstage Passes"
       (it "increases quality by 1 if sell-in is greater than 10"
-        (let [fourteen-day (update-item passes)]
+        (let [fourteen-day (update-quality-and-sell-in passes)]
           (should= (:quality fourteen-day) (inc (:quality passes)))))
 
       (it "increases quality by 2 if sell-in is 10 or less"
-        (let [nine-day (update-times update-item passes 6) ten-day (update-times update-item passes 5)]
+        (let [nine-day (call-function-times update-quality-and-sell-in passes 6) ten-day (call-function-times update-quality-and-sell-in passes 5)]
           (should= (:quality ten-day) 25)
           (should= (:quality nine-day) 27)))
 
       (it "increases quality by 3 if sell-in is 5 or less"
-        (let [four-day (update-times update-item passes 11) five-day (update-times update-item passes 10)]
+        (let [four-day (call-function-times update-quality-and-sell-in passes 11) five-day (call-function-times update-quality-and-sell-in passes 10)]
           (should= (:quality five-day) 35)
           (should= (:quality four-day) 38)))
 
       (it "drops quality to 0 after sell-in day"
-        (let [expired (update-times update-item passes 16)]
+        (let [expired (call-function-times update-quality-and-sell-in passes 16)]
           (should= (:quality expired) 0))))
 
     (context "Aged Brie"
       (it "increases in quality"
-        (let [updated-brie (update-item brie)]
+        (let [updated-brie (update-quality-and-sell-in brie)]
           (should= 1 (:quality updated-brie)))))
 
     (context "Conjured"
       (it "decreases in quality twice as fast"
-        (let [updated-conjured (update-item conjured)]
+        (let [updated-conjured (update-quality-and-sell-in conjured)]
           (should= (- (:quality conjured) 2) (:quality updated-conjured))))))
 
   (context "#update-inventory"
