@@ -9,7 +9,6 @@
 (def elixir (item "Elixir of the Mongoose" 5 7))
 (def vest (item "+5 Dexterity Vest" 10 20))
 
-(def updated-quality (update-quality default-item))
 (def updated-item (update-item default-item))
 
 (def inventory [vest elixir brie sulfuras passes])
@@ -69,15 +68,20 @@
 
   (context "#update-quality"
     (it "decreases the quality"
-      (should= (:quality updated-quality) 19))
+      (let [updated-quality (update-quality default-item)]
+        (should= 19 (:quality updated-quality))))
 
     (it "does not allow quality to be negative"
-      (let [min-quality (update-times default-item 100 update-quality)]
+      (let [min-quality (update-times update-quality default-item 100)]
         (should= 0 (:quality min-quality))))
 
     (it "does not allow quality to be greater than 50"
-      (let [max-quality (update-times brie 100 update-quality)]
-        (should= 50 (:quality max-quality)))))
+      (let [max-quality (update-times update-quality brie 100)]
+        (should= 50 (:quality max-quality))))
+
+    (it "decreases quality by 2 if sell-in is less than 0"
+      (let [sell-in-0 (update-times update-item default-item 10) sell-in-past (update-times update-item default-item 11)]
+        (should= (- (:quality sell-in-0) 2) (:quality sell-in-past)))))
 
   (context "#update-item"
      (it "updates the quality and sell-in"
@@ -96,17 +100,17 @@
           (should= (:quality fourteen-day) (inc (:quality passes)))))
 
       (it "increases quality by 2 if sell-in is 10 or less"
-        (let [nine-day (update-times passes 6 update-item) ten-day (update-times passes 5 update-item)]
+        (let [nine-day (update-times update-item passes 6) ten-day (update-times update-item passes 5)]
           (should= (:quality ten-day) 25)
           (should= (:quality nine-day) 27)))
 
       (it "increases quality by 3 if sell-in is 5 or less"
-        (let [four-day (update-times passes 11 update-item) five-day (update-times passes 10 update-item)]
+        (let [four-day (update-times update-item passes 11) five-day (update-times update-item passes 10)]
           (should= (:quality five-day) 35)
           (should= (:quality four-day) 38)))
 
       (it "drops quality to 0 after sell-in day"
-        (let [expired (update-times passes 16 update-item)]
+        (let [expired (update-times update-item passes 16)]
           (should= (:quality expired) 0))))
 
     (context "Aged Brie"

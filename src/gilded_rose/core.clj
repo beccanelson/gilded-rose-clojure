@@ -3,7 +3,7 @@
 (defn item [item-name, sell-in, quality]
   {:name item-name, :sell-in sell-in, :quality quality})
 
-(defn update-times [item times function]
+(defn update-times [function item times]
   (loop [times times current-item item]
     (if (= times 0)
       current-item
@@ -30,7 +30,9 @@
   (update item :sell-in (dec (:sell-in item))))
 
 (defmethod update-quality :default [item]
-  (decrease-quality item))
+  (if (< (:sell-in item) 0)
+    (update-times decrease-quality item 2)
+    (decrease-quality item)))
 
 (defmethod update-quality :passes [item]
   (increase-quality item))
@@ -62,9 +64,9 @@
       (< (:sell-in updated-passes) 0)
       (update passes :quality 0)
       (< (:sell-in updated-passes) 5)
-      (update-times updated-passes 3 update-quality)
+      (update-times update-quality updated-passes 3)
       (< (:sell-in updated-passes) 10)
-      (update-times updated-passes 2 update-quality)
+      (update-times update-quality updated-passes 2)
       :else
         (update-quality updated-passes))))
 
