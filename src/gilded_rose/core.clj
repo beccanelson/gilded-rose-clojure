@@ -40,6 +40,11 @@
 (defmethod update-quality :brie [item]
   (increase-quality item))
 
+(defmethod update-quality :conjured [item]
+  (if (< (:sell-in item) 0)
+    (update-times decrease-quality item 4)
+    (update-times decrease-quality item 2)))
+
 (defn make-sulfuras [name sell-in quality]
   {:item :sulfuras :name name :sell-in sell-in :quality quality})
 
@@ -48,6 +53,9 @@
 
 (defn make-brie [name sell-in quality]
   {:item :brie :name name :sell-in sell-in :quality quality})
+
+(defn make-conjured [name sell-in quality]
+  {:item :conjured :name name :sell-in sell-in :quality quality})
 
 (defmulti update-item :item)
 
